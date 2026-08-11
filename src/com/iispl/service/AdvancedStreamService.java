@@ -1,0 +1,44 @@
+package com.iispl.service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import com.iispl.model.Cheque;
+
+public interface AdvancedStreamService {
+
+	public void displayUniqueBatchAndMicr();
+	
+	public void displayProcessingRecords();
+	
+	public void displayPageCheques(int pageNumber, int pageSize);
+	
+	public int getChequesCount();
+	
+	public void displayMinAndMaxAmount();
+	
+	public BigDecimal getAvgAmount();
+	
+	public void getLookUpCheque(String chequeNumber);
+	
+	public String getApprovedChequeAsString();
+	
+	public Map<String, List<Cheque>> groupByBranch();
+	
+	public void displayBatchRecordCount(Map<String, List<Cheque>> groupedCheques);
+	
+	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques);
+	
+	public void displayBatchStatisticalSummary(Map<String, List<Cheque>> groupedCheques);
+	
+	public void displayBatchCheques(Map<String, List<Cheque>> groupedCheques);
+	
+	public void displayFinalizedCtsResult();
+	
+	public void displayStreamTrace();
+
+	public List<Cheque> sortCheques();
+	
+	public void displayMultiLevelOrder(List<Cheque> chequeList);
+}
