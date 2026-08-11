@@ -1,8 +1,10 @@
 package com.iispl.service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.iispl.dao.ChequeDao;
 import com.iispl.dao.ChequeDaoImpl;
@@ -50,8 +52,18 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public void displayMinAndMaxAmount() {
-		// TODO Auto-generated method stub
+		
+     if(chequeDao.getAllCheques().equals(null)) {
+    	 System.out.println("cheque List empty ");
+     }
+     else {
+	Optional<Cheque> highest = chequeDao.getAllCheques().stream().max(Comparator.comparing(Cheque:: getAmount));
+	Optional<Cheque> lowest = chequeDao.getAllCheques().stream().min(Comparator.comparing(Cheque:: getAmount));
+    
+	System.out.println(highest.get().getChequeNumber() +" "+ highest.get().getAmount());
+	System.out.println(lowest.get().getChequeNumber() +" "+ lowest.get().getAmount());
 
+	}
 	}
 
 	@Override
