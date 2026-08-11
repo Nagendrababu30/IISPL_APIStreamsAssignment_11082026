@@ -3,9 +3,11 @@ package com.iispl.service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.iispl.dao.ChequeDao;
 import com.iispl.dao.ChequeDaoImpl;
+import com.iispl.enums.ValidationStatus;
 import com.iispl.model.Cheque;
 
 public class AdvancedStreamServiceImpl implements AdvancedStreamService {
@@ -68,14 +70,18 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public String getApprovedChequeAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Cheque> cheques = chequeDao.getAllCheques();
+		 return cheques.stream()
+		            .filter(c -> c.getValidationStatus() == ValidationStatus.APPROVED)
+		            .map(Cheque::getChequeNumber)
+		            .collect(Collectors.joining(","));
 	}
 
 	@Override
 	public Map<String, List<Cheque>> groupByBranch() {
-		// TODO Auto-generated method stub
-		return null;
+		 List<Cheque> cheques = chequeDao.getAllCheques();
+		 return cheques.stream()
+		            .collect(Collectors.groupingBy(Cheque::getBranchCode));
 	}
 
 	@Override
