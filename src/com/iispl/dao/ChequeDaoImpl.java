@@ -44,20 +44,20 @@ public class ChequeDaoImpl implements ChequeDao {
 
             	    chequeList.add(
             	        new Cheque(
-            	            rs.getInt("cheque_id"),
+            	            rs.getLong("cheque_id"),
             	            rs.getString("cheque_number"),
             	            rs.getString("account_number"),
             	            rs.getString("customer_name"),
             	            rs.getString("branch_code"),
             	            rs.getString("micr_code"),
-            	            rs.getDouble("amount"),
-            	            rs.getDouble("available_balance"),
+            	            rs.getBigDecimal("amount"),
+            	            rs.getBigDecimal("available_balance"),
             	            rs.getDate("cheque_date").toLocalDate(),
             	            AccountStatus.valueOf(rs.getString("account_status")),
             	            ChequeType.valueOf(rs.getString("cheque_type")),
             	            MicrStatus.valueOf(rs.getString("micr_status")),
             	            ValidationStatus.valueOf(rs.getString("validation_status")),
-            	            rs.getInt("batch_id")
+            	            rs.getLong("batch_id")
             	        )
             	    );
             }
@@ -70,26 +70,130 @@ public class ChequeDaoImpl implements ChequeDao {
 	}
 
 	@Override
-	public List<Cheque> getChequesByBatch(int batchId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Cheque> getChequesByBatch(long batchId) {
+		List<Cheque> chequeList = new ArrayList<>();
+
+        String sql = "SELECT * FROM CTS_CHEQUE WHERE batch_id = ?";
+
+        try (
+                Connection connection = ConnectionPool.getDataSource().getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+
+            ps.setLong(1, batchId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+
+                	chequeList.add(
+                	        new Cheque(
+                	            rs.getLong("cheque_id"),
+                	            rs.getString("cheque_number"),
+                	            rs.getString("account_number"),
+                	            rs.getString("customer_name"),
+                	            rs.getString("branch_code"),
+                	            rs.getString("micr_code"),
+                	            rs.getBigDecimal("amount"),
+                	            rs.getBigDecimal("available_balance"),
+                	            rs.getDate("cheque_date").toLocalDate(),
+                	            AccountStatus.valueOf(rs.getString("account_status")),
+                	            ChequeType.valueOf(rs.getString("cheque_type")),
+                	            MicrStatus.valueOf(rs.getString("micr_status")),
+                	            ValidationStatus.valueOf(rs.getString("validation_status")),
+                	            rs.getLong("batch_id")
+                	        )
+                	    );
+                }
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return chequeList;
 	}
 
 	@Override
 	public Cheque getChequeByNumber(String chequeNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		Cheque cheque = null;
+		
+		String sql = "SELECT * FROM CTS_CHEQUE WHERE cheque_number = ?";
+
+        try (
+                Connection connection = ConnectionPool.getDataSource().getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, chequeNumber);
+
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+                    cheque =  new Cheque(
+            	            rs.getLong("cheque_id"),
+            	            rs.getString("cheque_number"),
+            	            rs.getString("account_number"),
+            	            rs.getString("customer_name"),
+            	            rs.getString("branch_code"),
+            	            rs.getString("micr_code"),
+            	            rs.getBigDecimal("amount"),
+            	            rs.getBigDecimal("available_balance"),
+            	            rs.getDate("cheque_date").toLocalDate(),
+            	            AccountStatus.valueOf(rs.getString("account_status")),
+            	            ChequeType.valueOf(rs.getString("cheque_type")),
+            	            MicrStatus.valueOf(rs.getString("micr_status")),
+            	            ValidationStatus.valueOf(rs.getString("validation_status")),
+            	            rs.getLong("batch_id"));
+                }
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return cheque;
 	}
 
 	@Override
 	public void updateMicrStatus(String chequeNumber, MicrStatus status) {
-		// TODO Auto-generated method stub
+		String sql = "UPDATE CTS_CHEQUE SET micr_status = ? WHERE cheque_number = ?";
+
+        try (
+                Connection connection = ConnectionPool.getDataSource().getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, status.name());
+            ps.setString(2, chequeNumber);
+
+            ps.executeUpdate();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 		
 	}
 
 	@Override
 	public void updateValidationStatus(String chequeNumber, ValidationStatus status) {
-		// TODO Auto-generated method stub
+		
+		String sql = "UPDATE CTS_CHEQUE SET validation_status = ? WHERE cheque_number = ?";
+
+        try (
+                Connection connection = ConnectionPool.getDataSource().getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, status.name());
+            ps.setString(2, chequeNumber);
+
+            ps.executeUpdate();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        
 		
 	}
 

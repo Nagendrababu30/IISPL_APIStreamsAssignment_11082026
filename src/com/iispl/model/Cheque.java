@@ -1,5 +1,6 @@
 package com.iispl.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.iispl.enums.AccountStatus;
@@ -9,24 +10,26 @@ import com.iispl.enums.ValidationStatus;
 
 public class Cheque {
 
-	private int chequeId;
+	private long chequeId;
 	private String chequeNumber;
 	private String accountNumber;
 	private String customerName;
 	private String branchCode;
 	private String micrCode;
-	private double amount;
-	private double availableBalance;
+	private BigDecimal amount;
+	private BigDecimal availableBalance;
 	private LocalDate chequeDate;
 	private AccountStatus accountStatus;
 	private ChequeType chequeType;
 	private MicrStatus micrStatus;
 	private ValidationStatus validationStatus;
-	private int batchId;
+	private long batchId;
 
-	public Cheque(int chequeId, String chequeNumber, String accountNumber, String customerName, String branchCode,
-			String micrCode, double amount, double availableBalance, LocalDate chequeDate, AccountStatus accountStatus,
-			ChequeType chequeType, MicrStatus micrStatus, ValidationStatus validationStatus, int batchId) {
+	public Cheque(long chequeId, String chequeNumber, String accountNumber, String customerName, String branchCode,
+			String micrCode, BigDecimal amount, BigDecimal availableBalance, LocalDate chequeDate,
+			AccountStatus accountStatus, ChequeType chequeType, MicrStatus micrStatus,
+			ValidationStatus validationStatus, long batchId) {
+		super();
 		this.chequeId = chequeId;
 		this.chequeNumber = chequeNumber;
 		this.accountNumber = accountNumber;
@@ -43,11 +46,11 @@ public class Cheque {
 		this.batchId = batchId;
 	}
 
-	public int getChequeId() {
+	public long getChequeId() {
 		return chequeId;
 	}
 
-	public void setChequeId(int chequeId) {
+	public void setChequeId(long chequeId) {
 		this.chequeId = chequeId;
 	}
 
@@ -91,19 +94,19 @@ public class Cheque {
 		this.micrCode = micrCode;
 	}
 
-	public double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
-	public double getAvailableBalance() {
+	public BigDecimal getAvailableBalance() {
 		return availableBalance;
 	}
 
-	public void setAvailableBalance(double availableBalance) {
+	public void setAvailableBalance(BigDecimal availableBalance) {
 		this.availableBalance = availableBalance;
 	}
 
@@ -147,11 +150,11 @@ public class Cheque {
 		this.validationStatus = validationStatus;
 	}
 
-	public int getBatchId() {
+	public long getBatchId() {
 		return batchId;
 	}
 
-	public void setBatchId(int batchId) {
+	public void setBatchId(long batchId) {
 		this.batchId = batchId;
 	}
 
