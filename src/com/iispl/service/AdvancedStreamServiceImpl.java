@@ -46,8 +46,11 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public int getChequesCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		List<Cheque> chequeList=chequeDao.getAllCheques();
+
+		int count=(int)chequeList.stream().count();
+
+		return count;
 	}
 
 	@Override
