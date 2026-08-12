@@ -270,20 +270,9 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public List<Cheque> sortCheques() {
+	public List<String> sortCheques() {
 		
-		List<Cheque> sortedCheques = cheques.stream()
-				.sorted(Comparator.comparing(Cheque::getBranchCode)
-						.thenComparing(Comparator.comparing(Cheque::getAmount).reversed())
-						.thenComparing(Cheque::getChequeNumber))
-				.collect(Collectors.toList());
-				
-		return sortedCheques;
-	}
-
-	@Override
-	public List<String> displayMultiLevelOrder(List<Cheque> chequeList) {
-		List<String> sortedList=chequeList.stream()
+		List<String> sortedList=cheques.stream()
 				.sorted(Comparator.comparing(Cheque::getBranchCode)
 				.thenComparing(Comparator.comparing(Cheque::getAmount).reversed())
 				.thenComparing(Cheque::getChequeNumber))
@@ -291,8 +280,17 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	                    + x.getAmount() + " | "
 	                    + x.getChequeNumber())
 				.toList();
-
+				
 		return sortedList;
+	}
+
+	@Override
+	public void displayMultiLevelOrder() {
+		List<String> sortedList = sortCheques();
+		
+		sortedList.forEach(System.out::println);
+
+		
 	}
 
  

@@ -39,7 +39,7 @@ public interface AdvancedStreamService {
 	
 	public void displayStreamTrace();
 
-	public List<Cheque> sortCheques();
+	public List<String> sortCheques();
 	
-	public List<String> displayMultiLevelOrder(List<Cheque> chequeList);
+	public void displayMultiLevelOrder();
 }
