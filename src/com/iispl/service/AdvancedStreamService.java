@@ -17,7 +17,7 @@ public interface AdvancedStreamService {
 	
 	public long getChequesCount();
 	
-	public Map getMinAndMaxAmount();
+	public Map<String, Double> getMinAndMaxAmount();
 	
 	public  double getAvgAmount();
 	
