@@ -3,6 +3,7 @@ package com.iispl.service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 
 import com.iispl.dao.ChequeDao;
 import com.iispl.dao.ChequeDaoImpl;
@@ -55,11 +56,15 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public BigDecimal getAvgAmount() {
-		// TODO Auto-generated method stub
-		return null;
+	public double getAvgAmount() {
+		List<Cheque> cheques = chequeDao.getAllCheques();
+		OptionalDouble avgAmount = cheques.stream().mapToDouble(Cheque::getAmount).average();
+		double avg_amount = avgAmount.orElse(0.0);
+		return avg_amount;
 	}
 
+
+	 
 	@Override
 	public void getLookUpCheque(String chequeNumber) {
 		// TODO Auto-generated method stub
@@ -126,4 +131,5 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	}
 
+ 
 }
