@@ -98,7 +98,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	LinkedHashMap<String, Double> map = new LinkedHashMap<>();
 	
     map.put(highest.get().getChequeNumber(), highest.get().getAmount().doubleValue() );
-    map.put(lowest.get().getChequeNumber(), highest.get().getAmount().doubleValue() );
+    map.put(lowest.get().getChequeNumber(), lowest.get().getAmount().doubleValue() );
 	
 	
      return map ;
