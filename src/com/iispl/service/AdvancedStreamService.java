@@ -10,7 +10,7 @@ public interface AdvancedStreamService {
 
 	public void displayUniqueBatchAndMicr();
 	
-	public void displayProcessingRecords();
+	public List<String> getTopFiveAmountCheques();
 	
 	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize);
 	
