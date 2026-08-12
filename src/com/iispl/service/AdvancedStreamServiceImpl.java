@@ -232,9 +232,17 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayMultiLevelOrder(List<Cheque> chequeList) {
-		// TODO Auto-generated method stub
+	public List<String> displayMultiLevelOrder(List<Cheque> chequeList) {
+		List<String> sortedList=chequeList.stream()
+				.sorted(Comparator.comparing(Cheque::getBranchCode)
+				.thenComparing(Comparator.comparing(Cheque::getAmount).reversed())
+				.thenComparing(Cheque::getChequeNumber))
+				.map(x -> x.getBranchCode() + " | "
+	                    + x.getAmount() + " | "
+	                    + x.getChequeNumber())
+				.toList();
 
+		return sortedList;
 	}
 
  
