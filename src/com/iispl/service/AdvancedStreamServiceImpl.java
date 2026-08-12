@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
@@ -118,9 +119,11 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	 
 	@Override
-	public void getLookUpCheque(String chequeNumber) {
-		// TODO Auto-generated method stub
-
+	public  Cheque getLookUpCheque(String chequeNumber) {
+		Map<String, Cheque> chequeLookup = chequeDao.getAllCheques().stream()
+		 .collect(Collectors.toMap(Cheque::getChequeNumber , Function.identity() ,(existing , duplicate ) -> existing));
+        
+		 return chequeLookup.get(chequeNumber);
 	}
 
 	@Override
