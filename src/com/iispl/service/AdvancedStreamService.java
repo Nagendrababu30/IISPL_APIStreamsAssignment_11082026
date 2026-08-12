@@ -9,13 +9,13 @@ import com.iispl.model.Cheque;
 
 public interface AdvancedStreamService {
 
-	public BranchMicrResult displayUniqueBatchAndMicr();
+	public BranchMicrResult getUniqueBatchAndMicr();
 	
 	public List<String> getTopFiveAmountCheques();
 	
 	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize);
 	
-	public int getChequesCount();
+	public long getChequesCount();
 	
 	public void displayMinAndMaxAmount();
 	
