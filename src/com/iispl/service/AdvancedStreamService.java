@@ -4,35 +4,36 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.iispl.dto.BranchMicrResult;
 import com.iispl.model.Cheque;
 
 public interface AdvancedStreamService {
 
-	public void displayUniqueBatchAndMicr();
+	public BranchMicrResult getUniqueBatchAndMicr();
 	
-	public void displayProcessingRecords();
+	public List<String> getTopFiveAmountCheques();
 	
-	public void displayPageCheques(int pageNumber, int pageSize);
+	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize);
 	
-	public int getChequesCount();
+	public long getChequesCount();
 	
 	public void displayMinAndMaxAmount();
 	
-	public BigDecimal getAvgAmount();
+	public  double getAvgAmount();
 	
-	public void getLookUpCheque(String chequeNumber);
+	public  Cheque getLookUpCheque(String chequeNumber);
 	
 	public String getApprovedChequeAsString();
 	
 	public Map<String, List<Cheque>> groupByBranch();
 	
-	public void displayBatchRecordCount(Map<String, List<Cheque>> groupedCheques);
+	public Map<String, Long> groupByBranchChequeCount();
 	
-	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques);
+	public void displayBranchAmountSummary();
 	
-	public void displayBatchStatisticalSummary(Map<String, List<Cheque>> groupedCheques);
+	public void displayBatchStatisticalSummary();
 	
-	public void displayBatchCheques(Map<String, List<Cheque>> groupedCheques);
+	public Map<String, List<String>> getBranchChequeNumbers();
 	
 	public void displayFinalizedCtsResult();
 	
@@ -40,5 +41,5 @@ public interface AdvancedStreamService {
 
 	public List<Cheque> sortCheques();
 	
-	public void displayMultiLevelOrder(List<Cheque> chequeList);
+	public List<String> displayMultiLevelOrder(List<Cheque> chequeList);
 }

@@ -1,19 +1,29 @@
 package com.iispl.service;
 
 import java.math.BigDecimal;
+
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.Optional;
+import java.util.Collections;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.function.Function;
+import java.util.OptionalDouble;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.iispl.dao.ChequeDao;
 import com.iispl.dao.ChequeDaoImpl;
+import com.iispl.dto.BranchMicrResult;
+import com.iispl.enums.ValidationStatus;
 import com.iispl.model.Cheque;
 
 public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	
 	ChequeDao chequeDao = ChequeDaoImpl.of();
+	List<Cheque> cheques=chequeDao.getAllCheques();
 	
 	static AdvancedStreamService advancedStreamService = null;
 	
@@ -28,106 +38,228 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayUniqueBatchAndMicr() {
-		// TODO Auto-generated method stub
+	public BranchMicrResult getUniqueBatchAndMicr() {
+		
+		
+		List<String> uniqueBatchCode =cheques.stream()
+				.map(cheque ->cheque.getBranchCode())
+				.distinct()
+				.toList();
+		
+		List<String> uniqueMicrCode=cheques.stream()
+				.map(cheque ->cheque.getMicrCode())
+				.distinct()
+				.toList();
+		
+		long micrCount=cheques.stream()
+				.map(cheque ->cheque.getMicrCode())
+				.distinct().count();
+		
+		return BranchMicrResult.of(uniqueBatchCode, uniqueMicrCode, micrCount);
+				
+	}
+
+	@Override
+	public List<String> getTopFiveAmountCheques() {
+		List<String> chequeList= cheques.stream()
+				.sorted(Comparator.comparing(Cheque::getAmount)
+				.reversed()).limit(5)
+				.map(x->x.getChequeNumber())
+				.toList();
+		return chequeList;
 
 	}
 
 	@Override
-	public void displayProcessingRecords() {
-		// TODO Auto-generated method stub
+	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize) {
+		List<String> chequeList=cheques.stream()
+				.map(x->x.getChequeNumber())
+				.skip((pageNumber-1)*pageSize)
+				.limit(pageSize)
+				.collect(Collectors.toList());
+		return chequeList;
+		
 
 	}
 
 	@Override
-	public void displayPageCheques(int pageNumber, int pageSize) {
-		// TODO Auto-generated method stub
+	public long getChequesCount() {
 
-	}
+		long count = cheques.stream().count();
 
-	@Override
-	public int getChequesCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return count;
 	}
 
 	@Override
 	public void displayMinAndMaxAmount() {
-		
-      
-     
-    	 
+
 	Optional<Cheque> highest = chequeDao.getAllCheques().stream().max(Comparator.comparing(Cheque:: getAmount));
 	Optional<Cheque> lowest = chequeDao.getAllCheques().stream().min(Comparator.comparing(Cheque:: getAmount));
 	LinkedHashMap<String, Double> map = new LinkedHashMap<>();
-
-	highest.map(c -> {
-	    map.put(c.getChequeNumber(), c.getAmount());
-	    return c;
-	});
-
-	lowest.map(c -> {
-	    map.put(c.getChequeNumber(), c.getAmount());
-	    return c;
-	});
-	
-	 
-	 System.out.println( map.firstEntry());
-	 System.out.println(map.lastEntry());
+    
+	map.put(c.getChequeNumber(), c.getAmount());
+  map.put(c.getChequeNumber(), c.getAmount());
  
 	}
 
 	@Override
-	public BigDecimal getAvgAmount() {
-		// TODO Auto-generated method stub
-		return null;
+	public double getAvgAmount() {
+		
+		OptionalDouble avgAmount = cheques.stream().mapToDouble(cheque -> cheque.getAmount().doubleValue()).average();
+		double avg_amount = avgAmount.orElse(0.0);
+		return avg_amount;
 	}
 
-	@Override
-	public void getLookUpCheque(String chequeNumber) {
-		// TODO Auto-generated method stub
 
+	 
+	@Override
+	public  Cheque getLookUpCheque(String chequeNumber) {
+		Map<String, Cheque> chequeLookup = cheques.stream()
+		 .collect(Collectors.toMap(Cheque::getChequeNumber , Function.identity() ,(existing , duplicate ) -> existing));
+        
+		 return chequeLookup.get(chequeNumber);
 	}
 
 	@Override
 	public String getApprovedChequeAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		 return cheques.stream()
+		            .filter(c -> c.getValidationStatus() == ValidationStatus.APPROVED)
+		            .map(Cheque::getChequeNumber)
+		            .collect(Collectors.joining(","));
 	}
 
 	@Override
 	public Map<String, List<Cheque>> groupByBranch() {
-		// TODO Auto-generated method stub
-		return null;
+		 
+		 return cheques.stream()
+		            .collect(Collectors.groupingBy(Cheque::getBranchCode));
+	}
+	@Override
+	public Map<String, Long> groupByBranchChequeCount(){
+	    
+
+	    return cheques.stream()
+	            .collect(
+	                Collectors.groupingBy(
+	                    Cheque::getBranchCode,
+	                    Collectors.counting()
+	                )
+	            );
+
+		
+	}
+	
+
+	@Override
+	public void displayBranchAmountSummary() {
+		Map<String, Double> branchTotalAmount =
+		        chequeDao.getAllCheques().stream()
+		                .collect(Collectors.groupingBy(
+		                        Cheque::getBranchCode,
+		                        Collectors.summingDouble(
+		                                cheque -> cheque.getAmount().doubleValue())
+		                ));
+		
+		Map<String, Double> branchAverageAmount =
+		        chequeDao.getAllCheques().stream()
+		                .collect(Collectors.groupingBy(
+		                        Cheque::getBranchCode,
+		                        Collectors.averagingDouble(
+		                                cheque -> cheque.getAmount().doubleValue())
+		                ));
+		System.out.println("===== BRANCH AMOUNT SUMMARY =====");
+
+		for (String branch : branchTotalAmount.keySet()) {
+
+		    double total = branchTotalAmount.get(branch);
+		    double average = branchAverageAmount.get(branch);
+
+		    System.out.printf(
+		        "%s | Total: %.2f | Average: %.2f%n",
+		        branch,
+		        total,
+		        average
+		    );
+		}
 	}
 
 	@Override
-	public void displayBatchRecordCount(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
+	public void displayBatchStatisticalSummary() {
+		
+	    List<Cheque> cheques = chequeDao.getAllCheques();
+	    
+	    Map<String, List<Cheque>> groupedCheques =
+	            cheques.stream()
+	                   .collect(Collectors.groupingBy(
+	                       Cheque::getBranchCode
+	                   ));
 
+		for (Map.Entry<String, List<Cheque>> entry
+	            : groupedCheques.entrySet()) {
+
+	        String branchCode = entry.getKey();
+	        List<Cheque> branchCheques = entry.getValue();
+
+	        DoubleSummaryStatistics statistics =
+	                branchCheques.stream()
+	                        .collect(
+	                            Collectors.summarizingDouble(
+	                                cheque -> cheque.getAmount().doubleValue()
+	                            )
+	                        );
+
+	        System.out.printf(
+	            "%s -> Count=%d, Sum=%.2f, Avg=%.2f, Min=%.2f, Max=%.2f%n",
+	            branchCode,
+	            statistics.getCount(),
+	            statistics.getSum(),
+	            statistics.getAverage(),
+	            statistics.getMin(),
+	            statistics.getMax()
+	        );
+	    }
+			
 	}
-
+	
 	@Override
-	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
+	public Map<String, List<String>> getBranchChequeNumbers() {
 
-	}
+	    Map<String, List<Cheque>> groupedCheques = groupByBranch();
 
-	@Override
-	public void displayBatchStatisticalSummary(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void displayBatchCheques(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
-
+	    return groupedCheques.entrySet()
+	            .stream().collect(Collectors.toMap(Map.Entry::getKey,
+	                    entry -> entry.getValue()
+	                            .stream()
+	                            .collect(Collectors.mapping(
+	                                    Cheque::getChequeNumber,
+	                                    Collectors.toList()
+	                            ))
+	            ));
 	}
 
 	@Override
 	public void displayFinalizedCtsResult() {
-		// TODO Auto-generated method stub
+		
+		List<Cheque> cheques = chequeDao.getAllCheques();
+		
+		List<Cheque> finalizedCheques = cheques.stream()
+				.collect(Collectors.collectingAndThen(
+						Collectors.toList(),
+						Collections::unmodifiableList
+						));
+		System.out.println("===== FINALIZED CTS RESULT =====");
+	    System.out.println("Records Collected : " + finalizedCheques.size());
+
+	    try {
+	        finalizedCheques.add(finalizedCheques.get(0));
+	    } catch (UnsupportedOperationException e) {
+	        System.out.println(
+	            "Modification Test : UnsupportedOperationException"
+	        );
+	    }
+
+	    System.out.println("Result : Collection remains unchanged");
 
 	}
 
@@ -139,14 +271,29 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public List<Cheque> sortCheques() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<Cheque> sortedCheques = cheques.stream()
+				.sorted(Comparator.comparing(Cheque::getBranchCode)
+						.thenComparing(Comparator.comparing(Cheque::getAmount).reversed())
+						.thenComparing(Cheque::getChequeNumber))
+				.collect(Collectors.toList());
+				
+		return sortedCheques;
 	}
 
 	@Override
-	public void displayMultiLevelOrder(List<Cheque> chequeList) {
-		// TODO Auto-generated method stub
+	public List<String> displayMultiLevelOrder(List<Cheque> chequeList) {
+		List<String> sortedList=chequeList.stream()
+				.sorted(Comparator.comparing(Cheque::getBranchCode)
+				.thenComparing(Comparator.comparing(Cheque::getAmount).reversed())
+				.thenComparing(Cheque::getChequeNumber))
+				.map(x -> x.getBranchCode() + " | "
+	                    + x.getAmount() + " | "
+	                    + x.getChequeNumber())
+				.toList();
 
+		return sortedList;
 	}
 
+ 
 }
