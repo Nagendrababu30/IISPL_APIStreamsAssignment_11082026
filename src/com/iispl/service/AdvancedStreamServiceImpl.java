@@ -91,14 +91,15 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public Map  getMinAndMaxAmount() {
+	public Map<String, Double>  getMinAndMaxAmount() {
 
-	Optional<Cheque> highest = chequeDao.getAllCheques().stream().max(Comparator.comparing(Cheque:: getAmount));
-	Optional<Cheque> lowest = chequeDao.getAllCheques().stream().min(Comparator.comparing(Cheque:: getAmount));
-	LinkedHashMap<String, Double> map = new LinkedHashMap<>();
-	
-    map.put(highest.get().getChequeNumber(), highest.get().getAmount().doubleValue() );
-    map.put(lowest.get().getChequeNumber(), highest.get().getAmount().doubleValue() );
+		Optional<Cheque> highest = cheques.stream().max(Comparator.comparing(Cheque::getAmount));
+		Optional<Cheque> lowest = cheques.stream().min(Comparator.comparing(Cheque::getAmount));
+		LinkedHashMap<String, Double> map = new LinkedHashMap<>();
+
+		highest.ifPresent(c -> map.put(c.getChequeNumber(), c.getAmount().doubleValue()));
+
+		lowest.ifPresent(c -> map.put(c.getChequeNumber(), c.getAmount().doubleValue()));
 	
 	
      return map ;
@@ -157,7 +158,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	@Override
 	public void displayBranchAmountSummary() {
 		Map<String, Double> branchTotalAmount =
-		        chequeDao.getAllCheques().stream()
+				cheques.stream()
 		                .collect(Collectors.groupingBy(
 		                        Cheque::getBranchCode,
 		                        Collectors.summingDouble(
@@ -165,7 +166,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 		                ));
 		
 		Map<String, Double> branchAverageAmount =
-		        chequeDao.getAllCheques().stream()
+				cheques.stream()
 		                .collect(Collectors.groupingBy(
 		                        Cheque::getBranchCode,
 		                        Collectors.averagingDouble(
@@ -190,7 +191,6 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	@Override
 	public void displayBatchStatisticalSummary() {
 		
-	    List<Cheque> cheques = chequeDao.getAllCheques();
 	    
 	    Map<String, List<Cheque>> groupedCheques =
 	            cheques.stream()
@@ -244,8 +244,6 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	@Override
 	public void displayFinalizedCtsResult() {
 		
-		List<Cheque> cheques = chequeDao.getAllCheques();
-		
 		List<Cheque> finalizedCheques = cheques.stream()
 				.collect(Collectors.collectingAndThen(
 						Collectors.toList(),
@@ -280,8 +278,8 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 				.thenComparing(Comparator.comparing(Cheque::getAmount).reversed())
 				.thenComparing(Cheque::getChequeNumber))
 				.map(x -> x.getBranchCode() + " | "
-	                    + x.getAmount() + " | "
-	                    + x.getChequeNumber())
+	                    + x.getChequeNumber() + " | "
+	                    + x.getAmount())
 				.toList();
 				
 		return sortedList;
