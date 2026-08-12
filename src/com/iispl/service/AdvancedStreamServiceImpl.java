@@ -168,32 +168,57 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayBatchStatisticalSummary(Map<String, List<Cheque>> groupedCheques) {
+	public void displayBatchStatisticalSummary() {
 		
-		for(Map.Entry<String ,List<Cheque>> entry : groupedCheques.entrySet()) {
+	    List<Cheque> cheques = chequeDao.getAllCheques();
+	    
+	    Map<String, List<Cheque>> groupedCheques =
+	            cheques.stream()
+	                   .collect(Collectors.groupingBy(
+	                       Cheque::getBranchCode
+	                   ));
+
+		for (Map.Entry<String, List<Cheque>> entry
+	            : groupedCheques.entrySet()) {
+
+	        String branchCode = entry.getKey();
+	        List<Cheque> branchCheques = entry.getValue();
+
+	        DoubleSummaryStatistics statistics =
+	                branchCheques.stream()
+	                        .collect(
+	                            Collectors.summarizingDouble(
+	                                cheque -> cheque.getAmount().doubleValue()
+	                            )
+	                        );
+
+	        System.out.printf(
+	            "%s -> Count=%d, Sum=%.2f, Avg=%.2f, Min=%.2f, Max=%.2f%n",
+	            branchCode,
+	            statistics.getCount(),
+	            statistics.getSum(),
+	            statistics.getAverage(),
+	            statistics.getMin(),
+	            statistics.getMax()
+	        );
+	    }
 			
-			String branchCode = entry.getKey();
-			List<Cheque> cheques = entry.getValue();
-			
-			DoubleSummaryStatistics statistics = cheques.stream()
-					.collect(Collectors.summarizingDouble(cheque -> cheque.getAmount().doubleValue()));
-			
-			  System.out.println(branchCode
-			            + " -> Count=" + statistics.getCount()
-			            + ", Sum=" + statistics.getSum()
-			            + ", Avg=" + statistics.getAverage()
-			            + ", Min=" + statistics.getMin()
-			            + ", Max=" + statistics.getMax()
-			        );
-			
-		}
-		
 	}
-
+	
 	@Override
-	public void displayBatchCheques(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
+	public Map<String, List<String>> getBranchChequeNumbers() {
 
+	    Map<String, List<Cheque>> groupedCheques = groupByBranch();
+
+	    return groupedCheques.entrySet()
+	            .stream().collect(Collectors.toMap(Map.Entry::getKey,
+	                    entry -> entry.getValue()
+	                            .stream()
+	                            .collect(Collectors.mapping(
+	                                    Cheque::getChequeNumber,
+	                                    Collectors.toList()
+	                            ))
+	            ));
 	}
 
 	@Override
