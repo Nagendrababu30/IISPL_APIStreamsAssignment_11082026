@@ -1,13 +1,15 @@
 package com.iispl.service;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
+import java.util.Collections;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.iispl.dao.ChequeDao;
 import com.iispl.dao.ChequeDaoImpl;
+import com.iispl.enums.ValidationStatus;
 import com.iispl.model.Cheque;
 
 public class AdvancedStreamServiceImpl implements AdvancedStreamService {
@@ -46,8 +48,11 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public int getChequesCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		List<Cheque> chequeList=chequeDao.getAllCheques();
+
+		int count=(int)chequeList.stream().count();
+
+		return count;
 	}
 
 	@Override
@@ -80,14 +85,18 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public String getApprovedChequeAsString() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Cheque> cheques = chequeDao.getAllCheques();
+		 return cheques.stream()
+		            .filter(c -> c.getValidationStatus() == ValidationStatus.APPROVED)
+		            .map(Cheque::getChequeNumber)
+		            .collect(Collectors.joining(","));
 	}
 
 	@Override
 	public Map<String, List<Cheque>> groupByBranch() {
-		// TODO Auto-generated method stub
-		return null;
+		 List<Cheque> cheques = chequeDao.getAllCheques();
+		 return cheques.stream()
+		            .collect(Collectors.groupingBy(Cheque::getBranchCode));
 	}
 
 	@Override
@@ -104,8 +113,25 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public void displayBatchStatisticalSummary(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
-
+		
+		for(Map.Entry<String ,List<Cheque>> entry : groupedCheques.entrySet()) {
+			
+			String branchCode = entry.getKey();
+			List<Cheque> cheques = entry.getValue();
+			
+			DoubleSummaryStatistics statistics = cheques.stream()
+					.collect(Collectors.summarizingDouble(cheque -> cheque.getAmount().doubleValue()));
+			
+			  System.out.println(branchCode
+			            + " -> Count=" + statistics.getCount()
+			            + ", Sum=" + statistics.getSum()
+			            + ", Avg=" + statistics.getAverage()
+			            + ", Min=" + statistics.getMin()
+			            + ", Max=" + statistics.getMax()
+			        );
+			
+		}
+		
 	}
 
 	@Override
