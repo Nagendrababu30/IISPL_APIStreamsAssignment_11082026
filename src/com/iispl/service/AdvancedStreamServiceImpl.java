@@ -59,8 +59,13 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayProcessingRecords() {
-		// TODO Auto-generated method stub
+	public List<String> getTopFiveAmountCheques() {
+		List<String> chequeList= chequeDao.getAllCheques().stream()
+				.sorted(Comparator.comparing(Cheque::getAmount)
+				.reversed()).limit(5)
+				.map(x->x.getChequeNumber())
+				.toList();
+		return chequeList;
 
 	}
 
