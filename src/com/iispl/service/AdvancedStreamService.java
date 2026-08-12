@@ -26,7 +26,7 @@ public interface AdvancedStreamService {
 	
 	public Map<String, List<Cheque>> groupByBranch();
 	
-	public void displayBatchRecordCount(Map<String, List<Cheque>> groupedCheques);
+	public Map<String, Long> groupByBranchChequeCount();
 	
 	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques);
 	
