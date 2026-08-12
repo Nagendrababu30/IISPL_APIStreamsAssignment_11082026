@@ -30,9 +30,9 @@ public interface AdvancedStreamService {
 	
 	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques);
 	
-	public void displayBatchStatisticalSummary(Map<String, List<Cheque>> groupedCheques);
+	public void displayBatchStatisticalSummary();
 	
-	public void displayBatchCheques(Map<String, List<Cheque>> groupedCheques);
+	public Map<String, List<String>> getBranchChequeNumbers();
 	
 	public void displayFinalizedCtsResult();
 	
