@@ -29,7 +29,7 @@ public interface AdvancedStreamService {
 	
 	public Map<String, Long> groupByBranchChequeCount();
 	
-	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques);
+	public void displayBranchAmountSummary();
 	
 	public void displayBatchStatisticalSummary();
 	

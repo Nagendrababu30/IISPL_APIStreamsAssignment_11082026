@@ -155,9 +155,36 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	
 
 	@Override
-	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
+	public void displayBranchAmountSummary() {
+		Map<String, Double> branchTotalAmount =
+		        chequeDao.getAllCheques().stream()
+		                .collect(Collectors.groupingBy(
+		                        Cheque::getBranchCode,
+		                        Collectors.summingDouble(
+		                                cheque -> cheque.getAmount().doubleValue())
+		                ));
+		
+		Map<String, Double> branchAverageAmount =
+		        chequeDao.getAllCheques().stream()
+		                .collect(Collectors.groupingBy(
+		                        Cheque::getBranchCode,
+		                        Collectors.averagingDouble(
+		                                cheque -> cheque.getAmount().doubleValue())
+		                ));
+		System.out.println("===== BRANCH AMOUNT SUMMARY =====");
 
+		for (String branch : branchTotalAmount.keySet()) {
+
+		    double total = branchTotalAmount.get(branch);
+		    double average = branchAverageAmount.get(branch);
+
+		    System.out.printf(
+		        "%s | Total: %.2f | Average: %.2f%n",
+		        branch,
+		        total,
+		        average
+		    );
+		}
 	}
 
 	@Override

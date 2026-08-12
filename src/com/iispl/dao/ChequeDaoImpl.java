@@ -31,7 +31,7 @@ public class ChequeDaoImpl implements ChequeDao {
 	public List<Cheque> getAllCheques() {
 		List<Cheque> chequeList = new ArrayList<>();
 
-        String sql = "SELECT * FROM cheque";
+        String sql = "SELECT * FROM CTS_CHEQUE";
 
         try (
                 Connection connection = ConnectionPool.getDataSource().getConnection();
