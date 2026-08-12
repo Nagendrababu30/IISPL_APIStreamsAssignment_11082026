@@ -3,6 +3,7 @@ package com.iispl.enums;
 public enum AccountStatus {
 
 	ACTIVE,
-	INACTIVE
+	INACTIVE,
+	BLOCKED
 	
 }
