@@ -91,14 +91,17 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayMinAndMaxAmount() {
+	public Map  getMinAndMaxAmount() {
 
 	Optional<Cheque> highest = chequeDao.getAllCheques().stream().max(Comparator.comparing(Cheque:: getAmount));
 	Optional<Cheque> lowest = chequeDao.getAllCheques().stream().min(Comparator.comparing(Cheque:: getAmount));
 	LinkedHashMap<String, Double> map = new LinkedHashMap<>();
-    
-	map.put(c.getChequeNumber(), c.getAmount());
-  map.put(c.getChequeNumber(), c.getAmount());
+	
+    map.put(highest.get().getChequeNumber(), highest.get().getAmount().doubleValue() );
+    map.put(lowest.get().getChequeNumber(), highest.get().getAmount().doubleValue() );
+	
+	
+     return map ;
  
 	}
 
