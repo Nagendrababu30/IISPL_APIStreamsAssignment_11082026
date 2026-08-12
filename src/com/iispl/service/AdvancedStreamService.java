@@ -18,7 +18,7 @@ public interface AdvancedStreamService {
 	
 	public void displayMinAndMaxAmount();
 	
-	public BigDecimal getAvgAmount();
+	public  double getAvgAmount();
 	
 	public void getLookUpCheque(String chequeNumber);
 	
