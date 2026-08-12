@@ -132,7 +132,7 @@ public class CTSResearchApplication {
 	    static void displayUniqueCTSValues() {
 
 	        BranchMicrResult result =
-	                advancedStreamService.getUniqueBatchAndMicr();
+	                advancedStreamService.getUniqueBranchAndMicr();
 
 	        System.out.println();
 	        System.out.println("===== UNIQUE CTS VALUES =====");
@@ -354,7 +354,7 @@ public class CTSResearchApplication {
 	        System.out.println();
 	        System.out.println("===== BRANCH STATISTICS =====");
 
-	        advancedStreamService.displayBatchStatisticalSummary();
+	        advancedStreamService.displayBranchStatisticalSummary();
 	    }
 
 

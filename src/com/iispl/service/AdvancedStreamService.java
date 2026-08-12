@@ -1,6 +1,5 @@
 package com.iispl.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,7 @@ import com.iispl.model.Cheque;
 
 public interface AdvancedStreamService {
 
-	public BranchMicrResult getUniqueBatchAndMicr();
+	public BranchMicrResult getUniqueBranchAndMicr();
 	
 	public List<String> getTopFiveAmountCheques();
 	
@@ -31,7 +30,7 @@ public interface AdvancedStreamService {
 	
 	public void displayBranchAmountSummary();
 	
-	public void displayBatchStatisticalSummary();
+	public void displayBranchStatisticalSummary();
 	
 	public Map<String, List<String>> getBranchChequeNumbers();
 	

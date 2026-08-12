@@ -35,7 +35,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public BranchMicrResult getUniqueBatchAndMicr() {
+	public BranchMicrResult getUniqueBranchAndMicr() {
 		
 		
 		List<String> uniqueBatchCode =cheques.stream()
@@ -184,7 +184,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayBatchStatisticalSummary() {
+	public void displayBranchStatisticalSummary() {
 		
 	    
 	    Map<String, List<Cheque>> groupedCheques =
