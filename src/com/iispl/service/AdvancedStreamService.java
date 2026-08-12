@@ -4,11 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.iispl.dto.BranchMicrResult;
 import com.iispl.model.Cheque;
 
 public interface AdvancedStreamService {
 
-	public void displayUniqueBatchAndMicr();
+	public BranchMicrResult displayUniqueBatchAndMicr();
 	
 	public void displayProcessingRecords();
 	

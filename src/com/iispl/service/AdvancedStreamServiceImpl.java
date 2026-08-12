@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import com.iispl.dao.ChequeDao;
 import com.iispl.dao.ChequeDaoImpl;
+import com.iispl.dto.BranchMicrResult;
 import com.iispl.enums.ValidationStatus;
 import com.iispl.model.Cheque;
 
@@ -32,7 +33,8 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayUniqueBatchAndMicr() {
+	public BranchMicrResult displayUniqueBatchAndMicr() {
+		
 		List<Cheque> cheques=chequeDao.getAllCheques();
 		
 		List<String> uniqueBatchCode =cheques.stream()
@@ -55,6 +57,8 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 		System.out.println("Branches :"+uniqueBatchCode);
 		System.out.println("MICR Count : "+micrCount);
 		System.out.println("MICR Codes :"+uniqueMicrCode);
+		
+		return BranchMicrResult.of(uniqueBatchCode, uniqueMicrCode, micrCount);
 				
 	}
 
