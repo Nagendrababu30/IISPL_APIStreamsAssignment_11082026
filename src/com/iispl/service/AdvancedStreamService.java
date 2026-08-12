@@ -12,7 +12,7 @@ public interface AdvancedStreamService {
 	
 	public void displayProcessingRecords();
 	
-	public void displayPageCheques(int pageNumber, int pageSize);
+	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize);
 	
 	public int getChequesCount();
 	
