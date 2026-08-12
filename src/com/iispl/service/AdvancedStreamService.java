@@ -20,7 +20,7 @@ public interface AdvancedStreamService {
 	
 	public BigDecimal getAvgAmount();
 	
-	public void getLookUpCheque(String chequeNumber);
+	public  Cheque getLookUpCheque(String chequeNumber);
 	
 	public String getApprovedChequeAsString();
 	

@@ -3,6 +3,8 @@ package com.iispl.service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.iispl.dao.ChequeDao;
 import com.iispl.dao.ChequeDaoImpl;
@@ -61,9 +63,11 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void getLookUpCheque(String chequeNumber) {
-		// TODO Auto-generated method stub
-
+	public  Cheque getLookUpCheque(String chequeNumber) {
+		Map<String, Cheque> chequeLookup = chequeDao.getAllCheques().stream()
+		 .collect(Collectors.toMap(Cheque::getChequeNumber , Function.identity() ,(existing , duplicate ) -> existing));
+        
+		 return chequeLookup.get(chequeNumber);
 	}
 
 	@Override
