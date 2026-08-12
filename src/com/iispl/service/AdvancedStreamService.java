@@ -28,7 +28,7 @@ public interface AdvancedStreamService {
 	
 	public void displayBatchRecordCount(Map<String, List<Cheque>> groupedCheques);
 	
-	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques);
+	public void displayBranchAmountSummary();
 	
 	public void displayBatchStatisticalSummary(Map<String, List<Cheque>> groupedCheques);
 	
