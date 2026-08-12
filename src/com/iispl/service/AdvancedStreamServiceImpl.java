@@ -2,6 +2,7 @@ package com.iispl.service;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,17 +54,27 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	@Override
 	public void displayMinAndMaxAmount() {
 		
-     if(chequeDao.getAllCheques().equals(null)) {
-    	 System.out.println("cheque List empty ");
-     }
-     else {
+      
+     
+    	 
 	Optional<Cheque> highest = chequeDao.getAllCheques().stream().max(Comparator.comparing(Cheque:: getAmount));
 	Optional<Cheque> lowest = chequeDao.getAllCheques().stream().min(Comparator.comparing(Cheque:: getAmount));
-    
-	System.out.println(highest.get().getChequeNumber() +" "+ highest.get().getAmount());
-	System.out.println(lowest.get().getChequeNumber() +" "+ lowest.get().getAmount());
+	LinkedHashMap<String, Double> map = new LinkedHashMap<>();
 
-	}
+	highest.map(c -> {
+	    map.put(c.getChequeNumber(), c.getAmount());
+	    return c;
+	});
+
+	lowest.map(c -> {
+	    map.put(c.getChequeNumber(), c.getAmount());
+	    return c;
+	});
+	
+	 
+	 System.out.println( map.firstEntry());
+	 System.out.println(map.lastEntry());
+ 
 	}
 
 	@Override
