@@ -41,5 +41,5 @@ public interface AdvancedStreamService {
 
 	public List<Cheque> sortCheques();
 	
-	public void displayMultiLevelOrder(List<Cheque> chequeList);
+	public List<String> displayMultiLevelOrder(List<Cheque> chequeList);
 }
