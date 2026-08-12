@@ -28,8 +28,29 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public void displayUniqueBatchAndMicr() {
-		// TODO Auto-generated method stub
-
+		List<Cheque> cheques=chequeDao.getAllCheques();
+		
+		List<String> uniqueBatchCode =cheques.stream()
+				.map(cheque ->cheque.getBranchCode())
+				.distinct()
+				.toList();
+		
+		List<String> uniqueMicrCode=cheques.stream()
+				.map(cheque ->cheque.getMicrCode())
+				.distinct()
+				.toList();
+		
+		long micrCount=cheques.stream()
+				.map(cheque ->cheque.getMicrCode())
+				.distinct().count();
+				//(or 
+		//long micrCount=uniqueMicrCode.size();
+		
+		System.out.println("======== UNIQUE CTS VALUES ========");
+		System.out.println("Branches :"+uniqueBatchCode);
+		System.out.println("MICR Count : "+micrCount);
+		System.out.println("MICR Codes :"+uniqueMicrCode);
+				
 	}
 
 	@Override
@@ -86,8 +107,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public void displayBatchRecordCount(Map<String, List<Cheque>> groupedCheques) {
-		// TODO Auto-generated method stub
-
+	
 	}
 
 	@Override
