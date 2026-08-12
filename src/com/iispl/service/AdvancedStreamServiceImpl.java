@@ -21,6 +21,7 @@ import com.iispl.model.Cheque;
 public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	
 	ChequeDao chequeDao = ChequeDaoImpl.of();
+	List<Cheque> cheques=chequeDao.getAllCheques();
 	
 	static AdvancedStreamService advancedStreamService = null;
 	
@@ -35,9 +36,8 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public BranchMicrResult displayUniqueBatchAndMicr() {
+	public BranchMicrResult getUniqueBatchAndMicr() {
 		
-		List<Cheque> cheques=chequeDao.getAllCheques();
 		
 		List<String> uniqueBatchCode =cheques.stream()
 				.map(cheque ->cheque.getBranchCode())
@@ -52,13 +52,6 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 		long micrCount=cheques.stream()
 				.map(cheque ->cheque.getMicrCode())
 				.distinct().count();
-				//(or 
-		//long micrCount=uniqueMicrCode.size();
-		
-		System.out.println("======== UNIQUE CTS VALUES ========");
-		System.out.println("Branches :"+uniqueBatchCode);
-		System.out.println("MICR Count : "+micrCount);
-		System.out.println("MICR Codes :"+uniqueMicrCode);
 		
 		return BranchMicrResult.of(uniqueBatchCode, uniqueMicrCode, micrCount);
 				
@@ -66,7 +59,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public List<String> getTopFiveAmountCheques() {
-		List<String> chequeList= chequeDao.getAllCheques().stream()
+		List<String> chequeList= cheques.stream()
 				.sorted(Comparator.comparing(Cheque::getAmount)
 				.reversed()).limit(5)
 				.map(x->x.getChequeNumber())
@@ -77,7 +70,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize) {
-		List<String> chequeList=chequeDao.getAllCheques().stream()
+		List<String> chequeList=cheques.stream()
 				.map(x->x.getChequeNumber())
 				.skip((pageNumber-1)*pageSize)
 				.limit(pageSize)
@@ -88,10 +81,9 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public int getChequesCount() {
-		List<Cheque> chequeList=chequeDao.getAllCheques();
+	public long getChequesCount() {
 
-		int count=(int)chequeList.stream().count();
+		long count = cheques.stream().count();
 
 		return count;
 	}
@@ -103,8 +95,8 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
     	 System.out.println("cheque List empty ");
      }
      else {
-	Optional<Cheque> highest = chequeDao.getAllCheques().stream().max(Comparator.comparing(Cheque:: getAmount));
-	Optional<Cheque> lowest = chequeDao.getAllCheques().stream().min(Comparator.comparing(Cheque:: getAmount));
+	Optional<Cheque> highest = cheques.stream().max(Comparator.comparing(Cheque:: getAmount));
+	Optional<Cheque> lowest = cheques.stream().min(Comparator.comparing(Cheque:: getAmount));
     
 	System.out.println(highest.get().getChequeNumber() +" "+ highest.get().getAmount());
 	System.out.println(lowest.get().getChequeNumber() +" "+ lowest.get().getAmount());
@@ -114,8 +106,8 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public double getAvgAmount() {
-		List<Cheque> cheques = chequeDao.getAllCheques();
-		OptionalDouble avgAmount = cheques.stream().mapToDouble(Cheque::getAmount).average();
+		
+		OptionalDouble avgAmount = cheques.stream().mapToDouble(cheque -> cheque.getAmount().doubleValue()).average();
 		double avg_amount = avgAmount.orElse(0.0);
 		return avg_amount;
 	}
@@ -124,7 +116,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	 
 	@Override
 	public  Cheque getLookUpCheque(String chequeNumber) {
-		Map<String, Cheque> chequeLookup = chequeDao.getAllCheques().stream()
+		Map<String, Cheque> chequeLookup = cheques.stream()
 		 .collect(Collectors.toMap(Cheque::getChequeNumber , Function.identity() ,(existing , duplicate ) -> existing));
         
 		 return chequeLookup.get(chequeNumber);
@@ -132,7 +124,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public String getApprovedChequeAsString() {
-		List<Cheque> cheques = chequeDao.getAllCheques();
+		
 		 return cheques.stream()
 		            .filter(c -> c.getValidationStatus() == ValidationStatus.APPROVED)
 		            .map(Cheque::getChequeNumber)
@@ -141,13 +133,13 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public Map<String, List<Cheque>> groupByBranch() {
-		 List<Cheque> cheques = chequeDao.getAllCheques();
+		 
 		 return cheques.stream()
 		            .collect(Collectors.groupingBy(Cheque::getBranchCode));
 	}
 	@Override
 	public Map<String, Long> groupByBranchChequeCount(){
-	    List<Cheque> cheques = chequeDao.getAllCheques();
+	    
 
 	    return cheques.stream()
 	            .collect(
