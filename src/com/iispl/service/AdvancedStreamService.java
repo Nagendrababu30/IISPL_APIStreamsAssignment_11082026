@@ -10,15 +10,15 @@ public interface AdvancedStreamService {
 
 	public void displayUniqueBatchAndMicr();
 	
-	public void displayProcessingRecords();
+	public List<String> getTopFiveAmountCheques();
 	
-	public void displayPageCheques(int pageNumber, int pageSize);
+	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize);
 	
 	public int getChequesCount();
 	
 	public void displayMinAndMaxAmount();
 	
-	public BigDecimal getAvgAmount();
+	public  double getAvgAmount();
 	
 	public  Cheque getLookUpCheque(String chequeNumber);
 	
