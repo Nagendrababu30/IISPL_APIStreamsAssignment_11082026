@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.OptionalDouble;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.iispl.dao.ChequeDao;
@@ -227,8 +228,14 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public List<Cheque> sortCheques() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<Cheque> sortedCheques = cheques.stream()
+				.sorted(Comparator.comparing(Cheque::getBranchCode)
+						.thenComparing(Comparator.comparing(Cheque::getAmount).reversed())
+						.thenComparing(Cheque::getChequeNumber))
+				.collect(Collectors.toList());
+				
+		return sortedCheques;
 	}
 
 	@Override
