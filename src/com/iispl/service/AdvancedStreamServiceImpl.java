@@ -141,11 +141,21 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 		 return cheques.stream()
 		            .collect(Collectors.groupingBy(Cheque::getBranchCode));
 	}
-
 	@Override
-	public void displayBatchRecordCount(Map<String, List<Cheque>> groupedCheques) {
-	
+	public Map<String, Long> groupByBranchChequeCount(){
+	    List<Cheque> cheques = chequeDao.getAllCheques();
+
+	    return cheques.stream()
+	            .collect(
+	                Collectors.groupingBy(
+	                    Cheque::getBranchCode,
+	                    Collectors.counting()
+	                )
+	            );
+
+		
 	}
+	
 
 	@Override
 	public void displayBatchAmountSummary(Map<String, List<Cheque>> groupedCheques) {
