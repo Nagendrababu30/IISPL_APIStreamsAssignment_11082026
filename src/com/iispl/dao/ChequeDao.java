@@ -10,7 +10,7 @@ public interface ChequeDao {
 
 	public List<Cheque> getAllCheques();
 	
-	public List<Cheque> getChequesByBatch(int batchId);
+	public List<Cheque> getChequesByBatch(long batchId);
 	
 	public Cheque getChequeByNumber(String chequeNumber);
 	
