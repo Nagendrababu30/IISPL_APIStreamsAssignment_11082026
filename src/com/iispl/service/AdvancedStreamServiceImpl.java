@@ -1,17 +1,14 @@
 package com.iispl.service;
 
-import java.math.BigDecimal;
-
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Optional;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.DoubleSummaryStatistics;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.OptionalDouble;
-import java.util.stream.Collector;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.iispl.dao.ChequeDao;
@@ -92,7 +89,6 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public Map<String, Double>  getMinAndMaxAmount() {
-
 		Optional<Cheque> highest = cheques.stream().max(Comparator.comparing(Cheque::getAmount));
 		Optional<Cheque> lowest = cheques.stream().min(Comparator.comparing(Cheque::getAmount));
 		LinkedHashMap<String, Double> map = new LinkedHashMap<>();
@@ -100,7 +96,6 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 		highest.ifPresent(c -> map.put(c.getChequeNumber(), c.getAmount().doubleValue()));
 
 		lowest.ifPresent(c -> map.put(c.getChequeNumber(), c.getAmount().doubleValue()));
-	
 	
      return map ;
  
@@ -172,7 +167,7 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 		                        Collectors.averagingDouble(
 		                                cheque -> cheque.getAmount().doubleValue())
 		                ));
-		System.out.println("===== BRANCH AMOUNT SUMMARY =====");
+		System.out.println("======== BRANCH AMOUNT SUMMARY ========");
 
 		for (String branch : branchTotalAmount.keySet()) {
 
@@ -266,7 +261,18 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public void displayStreamTrace() {
-		// TODO Auto-generated method stub
+		
+	    List<Cheque> cheques = chequeDao.getAllCheques();
+	    
+	    System.out.println("======== STREAM TRACE ========");
+	    System.out.println();
+	    List<String> chequeNumbers = cheques.stream()
+	            .peek(cheque -> System.out.println(
+	                    "TRACE -> " + cheque.getChequeNumber() + " entered pipeline"))
+	            .map(Cheque::getChequeNumber)
+	            .toList();
+	    System.out.println();
+	    System.out.println("Final result produced successfully");
 
 	}
 
