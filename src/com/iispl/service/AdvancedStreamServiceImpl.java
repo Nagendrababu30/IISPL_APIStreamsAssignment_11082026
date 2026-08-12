@@ -65,8 +65,14 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 	}
 
 	@Override
-	public void displayPageCheques(int pageNumber, int pageSize) {
-		// TODO Auto-generated method stub
+	public List<String> getChequeNumbersByPage(int pageNumber, int pageSize) {
+		List<String> chequeList=chequeDao.getAllCheques().stream()
+				.map(x->x.getChequeNumber())
+				.skip((pageNumber-1)*pageSize)
+				.limit(pageSize)
+				.collect(Collectors.toList());
+		return chequeList;
+		
 
 	}
 
