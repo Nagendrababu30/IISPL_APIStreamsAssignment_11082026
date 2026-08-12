@@ -215,7 +215,26 @@ public class AdvancedStreamServiceImpl implements AdvancedStreamService {
 
 	@Override
 	public void displayFinalizedCtsResult() {
-		// TODO Auto-generated method stub
+		
+		List<Cheque> cheques = chequeDao.getAllCheques();
+		
+		List<Cheque> finalizedCheques = cheques.stream()
+				.collect(Collectors.collectingAndThen(
+						Collectors.toList(),
+						Collections::unmodifiableList
+						));
+		System.out.println("===== FINALIZED CTS RESULT =====");
+	    System.out.println("Records Collected : " + finalizedCheques.size());
+
+	    try {
+	        finalizedCheques.add(finalizedCheques.get(0));
+	    } catch (UnsupportedOperationException e) {
+	        System.out.println(
+	            "Modification Test : UnsupportedOperationException"
+	        );
+	    }
+
+	    System.out.println("Result : Collection remains unchanged");
 
 	}
 
